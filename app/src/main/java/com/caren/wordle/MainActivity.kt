@@ -1,11 +1,16 @@
 package com.caren.wordle
 
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.color
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,9 +24,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        wordToGuess = FourLetterWordList.getRandomFourLetterWord()
-
-        wordToGuess = "book"
+        wordToGuess = FourLetterWordList.getRandomFourLetterWord()
 
         val guessTextField = findViewById<EditText>(R.id.guessTv).text
 
@@ -32,9 +35,13 @@ class MainActivity : AppCompatActivity() {
 
             guessesAttempted++
 
-            val guess = guessTextField.toString()
+            val guess = guessTextField.toString().uppercase()
 
-            val correctness = checkGuess(guess)
+//            val correctness = checkGuess(guess)
+
+            val correctness = buildSpannable(guess)
+
+            findViewById<TextView>(R.id.wordReveal).text = wordToGuess
 
             // Set guess correctness
             if (guessesAttempted == 1) {
@@ -88,5 +95,26 @@ class MainActivity : AppCompatActivity() {
         }
 
         return stringToReturn
+    }
+
+    fun buildSpannable(guess: String): Spannable {
+        val spannableString = SpannableStringBuilder()
+
+        for (i in guess.indices) {
+            // Is letter in target word
+            if (wordToGuess.contains(guess[i])) {
+                // Is letter in right place
+                if (wordToGuess[i].equals(guess[i])) {
+                    spannableString.color(Color.GREEN) { append(guess[i]) }
+                } else {
+                    spannableString.color(Color.RED) { append(guess[i]) }
+                }
+            } else {
+                spannableString.append(guess[i])
+            }
+        }
+
+        return spannableString
+
     }
 }

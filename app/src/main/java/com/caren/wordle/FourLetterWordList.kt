@@ -15,6 +15,6 @@ object FourLetterWordList {
     fun getRandomFourLetterWord(): String {
         val allWords = getAllFourLetterWords()
         val randomNumber = (0..allWords.size).random()
-        return allWords[randomNumber]
+        return allWords[randomNumber].uppercase()
     }
 }
